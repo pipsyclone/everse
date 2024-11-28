@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userid     String  @id @default(uuid())
+  providerid String  @map("provider_account_id")
+  provider   String
+  name       String
+  username   String? @unique
+  email      String? @unique
+  nophone    String? @unique
+  password   String
+  image      String  @default("user.png") @db.Text
+  role       String  @default("CUSTOMER")
+
+  ProductDetails ProductDetails[]
+  Transactions   Transactions[]
+
+  @@map("users")
+}
+
+model ProductDetails {
+  productid                String @id @default(uuid())
+  userid                   String
+  productcode              Int    @unique
+  productname              String
+  productstatus            String @default("ACTIVE")
+  productimagesquare       String @db.Text
+  productimagelandscape    String @default("-") @db.Text
+  productimageinstructions String @default("-") @db.Text
+  productinstructions      String
+
+  User Users @relation(fields: [userid], references: [userid], onDelete: Cascade)
+
+  @@map("productdetails")
+}
+
+model Transactions {
+  trxid         String @id @default(uuid())
+  userid        String
+  refid         String
+  productid     String
+  statuspayment String @default("UNPAID")
+  statusitem    String @default("UNPAID")
+
+  User Users @relation(fields: [userid], references: [userid], onDelete: Cascade)
+
+  @@map("transactions")
+}
