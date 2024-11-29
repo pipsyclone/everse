@@ -14,6 +14,8 @@ async function main() {
 			nophone: "085155467817",
 			password: md5("admin123"),
 			role: "ADMIN",
+			provider:"Credentials",
+			providerid:md5(new Date().toISOString())
 		},
 	});
 }

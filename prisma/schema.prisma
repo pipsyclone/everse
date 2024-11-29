@@ -24,7 +24,8 @@ model Users {
   password   String
   image      String  @default("user.png") @db.Text
   role       String  @default("CUSTOMER")
-
+  sessions      Session[]
+  
   ProductDetails ProductDetails[]
   Transactions   Transactions[]
 
@@ -59,3 +60,14 @@ model Transactions {
 
   @@map("transactions")
 }
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         Users     @relation(fields: [userId], references: [userid], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
